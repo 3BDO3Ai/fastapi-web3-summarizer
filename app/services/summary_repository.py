@@ -1,4 +1,6 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, desc
+from sqlalchemy.future import select
 from fastapi import Depends
 from typing import List, Optional
 
@@ -6,7 +8,7 @@ from .. import models
 from ..database import get_db
 
 class SummaryRepository:
-    def __init__(self, db: Session = Depends(get_db)):
+    def __init__(self, db: AsyncSession = Depends(get_db)):
         self.db = db
     
     async def create_summary(
@@ -35,8 +37,8 @@ class SummaryRepository:
             summary_content=summary_content
         )
         self.db.add(db_summary)
-        self.db.commit()
-        self.db.refresh(db_summary)
+        await self.db.commit()
+        await self.db.refresh(db_summary)
         return db_summary
     
     async def get_summaries_by_wallet(self, wallet_address: str) -> List[models.Summary]:
@@ -49,9 +51,12 @@ class SummaryRepository:
         Returns:
             List[models.Summary]: List of summary objects
         """
-        return self.db.query(models.Summary).filter(
+        query = select(models.Summary).where(
             models.Summary.wallet_address == wallet_address
-        ).order_by(models.Summary.created_at.desc()).all()
+        ).order_by(desc(models.Summary.created_at))
+        
+        result = await self.db.execute(query)
+        return result.scalars().all()
     
     async def get_summary_by_id(self, summary_id: int) -> Optional[models.Summary]:
         """
@@ -63,4 +68,6 @@ class SummaryRepository:
         Returns:
             Optional[models.Summary]: The summary object if found, None otherwise
         """
-        return self.db.query(models.Summary).filter(models.Summary.id == summary_id).first()
+        query = select(models.Summary).where(models.Summary.id == summary_id)
+        result = await self.db.execute(query)
+        return result.scalars().first()

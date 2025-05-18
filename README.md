@@ -1,5 +1,7 @@
 # FastAPI Web3 Article Summarizer
 
+[![Docker Image](https://img.shields.io/docker/pulls/3bdoai3/web3-summarizer-api.svg)](https://hub.docker.com/r/3bdoai3/web3-summarizer-api)
+
 A REST API that allows users to submit articles for summarization while verifying their identity using Web3 signatures. This project is built according to the specified task requirements, including Web3 validation, article scraping, AI-powered summarization, and database storage.
 
 ## Features
@@ -12,6 +14,8 @@ A REST API that allows users to submit articles for summarization while verifyin
 - **Database Storage**: Persistent storage of summaries with PostgreSQL
 - **Async Implementation**: Non-blocking API design for better performance
 - **Clean Architecture**: Modular code structure with separation of concerns
+- **Docker Integration**: Production-ready containerization with multi-stage builds
+- **Docker Hub Support**: Easy publishing to Docker Hub with automated scripts
 
 ## API Endpoints
 
@@ -80,10 +84,32 @@ A REST API that allows users to submit articles for summarization while verifyin
    # Alternatively: uvicorn app.main:app --reload
    ```
 
-### Docker Setup (Optional)
+### Docker Setup
 
+#### Using Local Build
 ```bash
 docker-compose up -d
+```
+
+#### Using Docker Hub Image
+The application is available as a Docker image on Docker Hub:
+
+```bash
+# Pull and run using the published image
+docker pull 3bdoai3/web3-summarizer-api:latest
+docker-compose up -d
+```
+
+#### Publishing to Docker Hub
+To publish your own version to Docker Hub:
+
+```bash
+# For Windows users
+.\publish_to_dockerhub.ps1 YOUR_DOCKERHUB_USERNAME
+
+# For Linux/Mac users
+chmod +x publish_to_dockerhub.sh
+./publish_to_dockerhub.sh YOUR_DOCKERHUB_USERNAME
 ```
 
 ## Usage
@@ -147,21 +173,23 @@ pytests
 ## Project Structure
 
 ```
-├── app/                  # Main application package
-│   ├── routers/          # API route definitions
-│   ├── schemas/          # Pydantic models
-│   ├── services/         # Business logic
-│   ├── database.py       # Database configuration
-│   ├── main.py           # FastAPI application
-│   └── models.py         # SQLAlchemy models
-├── tests/                # Test suite
-├── .env                  # Environment variables (create from .env.example)
-├── .env.example         # Example environment configuration
-├── docker-compose.yml   # Docker Compose configuration
-├── Dockerfile           # Docker configuration
-├── requirements.txt     # Python dependencies
-├── run.py               # Application entry point
-└── sample_client.py     # Example client implementation
+├── app/                     # Main application package
+│   ├── routers/             # API route definitions
+│   ├── schemas/             # Pydantic models
+│   ├── services/            # Business logic
+│   ├── database.py          # Database configuration
+│   ├── main.py              # FastAPI application
+│   └── models.py            # SQLAlchemy models
+├── tests/                   # Test suite
+├── .env                     # Environment variables (create from .env.example)
+├── .env.example             # Example environment configuration
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile               # Docker configuration with multi-stage build
+├── publish_to_dockerhub.ps1 # PowerShell script for Docker Hub publishing
+├── publish_to_dockerhub.sh  # Bash script for Docker Hub publishing
+├── requirements.txt         # Python dependencies
+├── run.py                   # Application entry point
+└── sample_client.py         # Example client implementation
 ```
 
 ## Evaluation Criteria Fulfillment

@@ -1,17 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
+import asyncio
 from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .routers import summary
-from .database import engine
+from .database import engine, Base
 from . import models
 
 # Load environment variables
 load_dotenv()
-
-# Create database tables
-models.Base.metadata.create_all(bind=engine)
 
 # API configuration from environment variables
 API_TITLE = os.getenv("API_TITLE", "Web3 Article Summarizer API")
@@ -35,6 +34,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Create database tables on startup
+@app.on_event("startup")
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 # Include routers
 app.include_router(summary.router, prefix="/api")
