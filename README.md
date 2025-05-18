@@ -9,7 +9,7 @@ A REST API that allows users to submit articles for summarization while verifyin
 - **Dual AI Integration**: Supports both OpenAI and HuggingFace for summarization
   - Configurable HuggingFace model selection
   - Graceful fallback mechanisms when API keys aren't available
-- **Database Storage**: Persistent storage of summaries with SQLite (PostgreSQL compatible)
+- **Database Storage**: Persistent storage of summaries with PostgreSQL
 - **Async Implementation**: Non-blocking API design for better performance
 - **Clean Architecture**: Modular code structure with separation of concerns
 
@@ -37,7 +37,7 @@ A REST API that allows users to submit articles for summarization while verifyin
 
 - **Backend**: Python 3.10, FastAPI
 - **Authentication**: Web3.py for Ethereum signature verification
-- **Data Storage**: SQLite (PostgreSQL compatible design)
+- **Data Storage**: PostgreSQL
 - **AI Integration**: 
   - OpenAI GPT-3.5 for summarization when OpenAI API key is available
   - HuggingFace models (configurable) with multiple fallback mechanisms
